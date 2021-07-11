@@ -20,28 +20,39 @@ const renderCountry = function(data, className = '') {
     countriesContainer.style.opacity = 1;
 }
 
-const getCountryAndNeighbour = function(country) {
+// const getCountryAndNeighbour = function(country) {
     
-    ///////////////////////////////////////
-    const request = new XMLHttpRequest();
-    request.open('GET', `https://restcountries.eu/rest/v2/name/${country}`);
-    request.send();
-    request.addEventListener('load', function() {
-        const [data] = JSON.parse(this.responseText);
-        renderCountry(data);
+//     ///////////////////////////////////////
+//     const request = new XMLHttpRequest();
+//     request.open('GET', `https://restcountries.eu/rest/v2/name/${country}`);
+//     request.send();
+//     request.addEventListener('load', function() {
+//         const [data] = JSON.parse(this.responseText);
+//         renderCountry(data);
 
-        const neighbour = data.borders;
-        if( !neighbour ) return;
+//         const neighbour = data.borders;
+//         if( !neighbour ) return;
 
-        const request2 = new XMLHttpRequest();
-        request2.open('GET', `https://restcountries.eu/rest/v2/alpha/${neighbour}`);
-        request2.send();
+//         const request2 = new XMLHttpRequest();
+//         request2.open('GET', `https://restcountries.eu/rest/v2/alpha/${neighbour}`);
+//         request2.send();
 
-        request2.addEventListener('load', function() {
-            const data2 = JSON.parse(this.responseText);
-            renderCountry(data2, 'neighbour');
-        });
-    });
+//         request2.addEventListener('load', function() {
+//             const data2 = JSON.parse(this.responseText);
+//             renderCountry(data2, 'neighbour');
+//         });
+//     });
+// }
+
+// getCountryAndNeighbour('portugal');
+
+const request = fetch('https://restcountries.eu/rest/v2/name/portugal');
+console.log(request);
+
+const getCountryData = function(country) {
+    fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+    .then(response => response.json())
+    .then((data) => renderCountry(data[0]));
 }
 
-getCountryAndNeighbour('portugal');
+getCountryData('portugal');
