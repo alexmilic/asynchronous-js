@@ -121,23 +121,53 @@ const renderCountry = function(data, className = '') {
 //     return wait(1);
 // });
 
-const getPosition = function() {
-    return new Promise(function(resolve, reject) {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
+// const getPosition = function() {
+//     return new Promise(function(resolve, reject) {
+//         navigator.geolocation.getCurrentPosition(resolve, reject);
+//     })
+// }
+
+// const whereAmI = async function() {
+//     const pos = await getPosition();
+//     const {latitude: lat, longitude: lng} = pos.coords;
+
+//     const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+//     const dataGeo = await resGeo.json();
+    
+//     const res = await fetch(`https://restcountries.eu/rest/v2/name/${dataGeo.country}`);
+//     const data = await res.json();
+//     renderCountry(data[0]);
+//     countriesContainer.style.opacity = 1;
+// }
+
+// whereAmI();
+
+const getJSON = function(url, errorMsg = 'Something went wrong') {
+    return fetch(url)
+    .then(response => {
+        if(!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+        
+        return response.json();
     })
 }
 
-const whereAmI = async function() {
-    const pos = await getPosition();
-    const {latitude: lat, longitude: lng} = pos.coords;
+const get3Countries = async function(c1, c2, c3) {
+    try {
+        // const [data1] = await getJSON(`https://restcountries.eu/rest/v2/name/${c1}`);
+        // const [data2] = await getJSON(`https://restcountries.eu/rest/v2/name/${c2}`);
+        // const [data3] = await getJSON(`https://restcountries.eu/rest/v2/name/${c3}`);
 
-    const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
-    const dataGeo = await resGeo.json();
-    
-    const res = await fetch(`https://restcountries.eu/rest/v2/name/${dataGeo.country}`);
-    const data = await res.json();
-    renderCountry(data[0]);
-    countriesContainer.style.opacity = 1;
+        const data = await Promise.all(
+           [ getJSON(`https://restcountries.eu/rest/v2/name/${c1}`),
+            getJSON(`https://restcountries.eu/rest/v2/name/${c2}`),
+            getJSON(`https://restcountries.eu/rest/v2/name/${c3}`)]
+        )
+
+        console.log(data);
+        console.log(data.map(item => item[0].capital));
+    } catch(error) {
+
+    }
 }
 
-whereAmI();
+get3Countries('portugal', 'canada', 'tanzania');
